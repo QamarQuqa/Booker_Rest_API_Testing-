@@ -1,0 +1,48 @@
+package TestClasses;
+
+import static org.junit.Assert.*;
+
+import java.io.IOException;
+import java.net.HttpURLConnection;
+
+import org.json.simple.JSONObject;
+import org.junit.Ignore;
+import org.junit.Test;
+
+import Links.FilesPaths;
+import Links.URLs;
+import Utils.JSONUtils;
+import enums.HTTPMethod;
+import enums.HTTPRequestsContentTypes;
+import requestHandling.RestClientHandler;
+
+public class TestDeleteRestAPI {
+	
+	
+	//@Ignore
+	@Test
+	public void TestDeleteUserExist() throws IOException {
+		
+		// get url with exist id 
+		String url = URLs.BOOKING+"/2";
+		System.out.println(url);
+//sendDelete
+		
+		// 1. connect to server and open connection (get HttpURLConnection object)
+		HttpURLConnection connection = RestClientHandler.connectServer(URLs.BOOKING, HTTPMethod.DELETE,
+				HTTPRequestsContentTypes.JSON);
+		
+		// 2. validate if the connection is successfully openned
+		System.out.println("connection.getResponseCode() : " + connection.getResponseCode());
+		assertTrue("unable to connect to webservice", connection.getResponseCode() == 200);
+		
+		// 3. reading response using input stream
+		String response = RestClientHandler.readResponse(connection);
+		System.out.println(response);
+		//assertTrue("Data is empty", !response.equals(""));
+		
+
+
+	}
+	
+}

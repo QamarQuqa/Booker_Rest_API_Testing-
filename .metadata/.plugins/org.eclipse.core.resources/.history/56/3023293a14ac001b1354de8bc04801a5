@@ -1,0 +1,101 @@
+package TestClasses;
+
+import static org.junit.Assert.*;
+
+import java.io.IOException;
+import java.net.HttpURLConnection;
+
+import org.json.simple.JSONObject;
+import org.junit.Ignore;
+import org.junit.Test;
+
+import Links.FilesPaths;
+import Links.URLs;
+import Utils.JSONUtils;
+import enums.HTTPMethod;
+import enums.HTTPRequestsContentTypes;
+import requestHandling.RestClientHandler;
+
+public class TestUpdateRestAPI {
+
+
+	
+	
+	//@Ignore
+	@Test
+	public void testUpdateUser() throws Exception { //valid return200
+		// 1. Open Connection --- HttpURLConnection
+		String url = URLs.BOOKING+"/2";
+		//url = url.replace("userID", "2");
+		System.out.println(url);
+
+		HttpURLConnection connection = RestClientHandler.connectServer(URLs.Auth, HTTPMethod.POST,
+				HTTPRequestsContentTypes.JSON);
+		
+		// 2. Prepare Json Object
+		String resquestJSONObject_AUTH = JSONUtils.readJSONObjectFromFile(FilesPaths.TokenJSONFile);
+		
+		// 3. Post Request
+		RestClientHandler.sendPost(connection, resquestJSONObject_AUTH, HTTPRequestsContentTypes.JSON);
+		
+		// 4. Reading Response
+		String response_AUTH = RestClientHandler.readResponse(connection);
+		
+		// 5. convert String to JSON
+		JSONObject jsonObject = (JSONObject) JSONUtils.convertStringToJSON(response_AUTH);
+		
+				
+		
+		HttpURLConnection new_connection = RestClientHandler.connectServer(url, HTTPMethod.PUT,
+				HTTPRequestsContentTypes.JSON);
+		
+		new_connection.setRequestProperty("Cookie", "token="+ jsonObject.get("token"));
+
+		// 2. Prepare Json Object
+		String resquestJSONObject = JSONUtils.readJSONObjectFromFile(FilesPaths.UpdateUserJSONFile);
+		System.out.println(resquestJSONObject);
+		
+		// 3. Post Request
+		RestClientHandler.sendPut(new_connection, resquestJSONObject, HTTPRequestsContentTypes.JSON);
+		
+		// 4. Reading Response
+		System.out.println(new_connection.getResponseCode());
+		String response = RestClientHandler.readResponse(new_connection);
+		System.out.println(response);
+	}
+	
+	
+	 
+	
+	
+	 
+	@Ignore
+	@Test
+	public void test_invalid_update_user() throws Exception { 
+	
+		// 1. Open Connection --- HttpURLConnection
+		String url = URLs.BOOKING+"/1";
+		System.out.println(url);
+		
+		HttpURLConnection connection = RestClientHandler.connectServer(url, HTTPMethod.PUT,
+				HTTPRequestsContentTypes.JSON);
+	
+		// 2. Prepare Json Object
+		String resquestJSONObject = JSONUtils.readJSONObjectFromFile(FilesPaths.UpdateUserJSONFile);
+		System.out.println(resquestJSONObject);
+		
+		// 3. Post Request
+		RestClientHandler.sendPut(connection, resquestJSONObject, HTTPRequestsContentTypes.JSON);
+		
+		// 4. Reading Response
+		System.out.println(connection.getResponseCode());
+		String response = RestClientHandler.readResponse(connection);
+		System.out.println(response);
+	}
+	
+	
+	
+	
+	
+
+}

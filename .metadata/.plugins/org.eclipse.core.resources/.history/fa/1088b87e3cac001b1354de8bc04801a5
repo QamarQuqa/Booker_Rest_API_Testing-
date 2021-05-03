@@ -1,0 +1,170 @@
+package TestClasses;
+
+import static org.junit.Assert.*;
+
+import java.net.HttpURLConnection;
+
+import org.json.simple.JSONObject;
+import org.junit.Ignore;
+import org.junit.Test;
+
+import Links.FilesPaths;
+import Links.URLs;
+import Utils.JSONUtils;
+import enums.HTTPMethod;
+import enums.HTTPRequestsContentTypes;
+import requestHandling.RestClientHandler;
+
+public class TestPostRestAPI {
+
+	// Authentication Testing
+	
+	@Ignore
+	@Test
+	public void test_valid_login()  throws Exception {
+		
+		// 1. Open Connection --- HttpURLConnection
+		HttpURLConnection connection = RestClientHandler.connectServer(URLs.Auth, HTTPMethod.POST,
+										HTTPRequestsContentTypes.JSON);
+		// 2. Prepare Json Object
+		String resquestJSONObject = JSONUtils.readJSONObjectFromFile(FilesPaths.TokenJSONFile);
+		
+		// 3. Post Request
+		RestClientHandler.sendPost(connection, resquestJSONObject, HTTPRequestsContentTypes.JSON);
+		
+		// 4. Reading Response
+		String response = RestClientHandler.readResponse(connection);
+		System.out.println(response);
+		
+		// 5. convert String to JSON
+		JSONObject jsonObject = (JSONObject) JSONUtils.convertStringToJSON(response);
+				
+		assertTrue("Invalid Login" ,!jsonObject.get("token").equals(""));
+	}
+	
+	
+	
+	//@Ignore
+	@Test
+	public void test_invalid_login() throws Exception {
+		//chenge username or pass
+		
+		// 1. Open Connection --- HttpURLConnection
+		HttpURLConnection connection = RestClientHandler.connectServer(URLs.Auth, HTTPMethod.POST,
+										HTTPRequestsContentTypes.JSON);
+		// 2. Prepare Json Object
+		String resquestJSONObject = JSONUtils.readJSONObjectFromFile(FilesPaths.TokenJSONFile);
+		
+		// 3. Post Request
+		RestClientHandler.sendPost(connection, resquestJSONObject, HTTPRequestsContentTypes.JSON);
+		
+		// 4. Reading Response
+		String response = RestClientHandler.readResponse(connection);
+		System.out.println(response);
+		
+		// 5. convert String to JSON
+		JSONObject jsonObject = (JSONObject) JSONUtils.convertStringToJSON(response);
+		
+		System.out.println(jsonObject.get("reason"));
+		
+		assertTrue("kk " ,"Bad credentials" == jsonObject.get("response"));
+
+
+		}
+	
+	
+	 
+	
+//----------------------------------------------------------------------
+	
+	
+	
+	
+	@Ignore
+	@Test
+	public void testCreateValidBooking() throws Exception {
+		// 1. Open Connection --- HttpURLConnection
+		HttpURLConnection connection = RestClientHandler.connectServer(URLs.BOOKING, HTTPMethod.POST,
+				HTTPRequestsContentTypes.JSON);
+		// 2. Prepare Json Object
+		String resquestJSONObject = JSONUtils.readJSONObjectFromFile(FilesPaths.NewBookingJSONFile);
+		// 3. Post Request
+		RestClientHandler.sendPost(connection, resquestJSONObject, HTTPRequestsContentTypes.JSON);
+		// 4. Reading Response
+		String response = RestClientHandler.readResponse(connection);
+		System.out.println(response);
+		// 5. convert String to JSON
+		JSONObject jsonObject = (JSONObject) JSONUtils.convertStringToJSON(response);
+		
+		// testing if all fields exist or not 
+		jsonObject.remove("bookingid");
+		JSONObject request_object = (JSONObject) JSONUtils.convertStringToJSON(resquestJSONObject);
+		assertTrue(request_object.equals(((JSONObject) jsonObject.get("booking"))));
+	}
+	
+	
+	
+	
+	
+	
+	@Ignore
+	@Test
+	public void testCreateInValidBooking() throws Exception {
+		// 1. Open Connection --- HttpURLConnection
+		HttpURLConnection connection = RestClientHandler.connectServer(URLs.BOOKING, HTTPMethod.POST,
+				HTTPRequestsContentTypes.JSON);
+		// 2. Prepare Json Object
+		String resquestJSONObject = JSONUtils.readJSONObjectFromFile(FilesPaths.NewBookingJSONFile);
+		// 3. Post Request
+		RestClientHandler.sendPost(connection, resquestJSONObject, HTTPRequestsContentTypes.JSON);
+		// 4. Reading Response
+		String response = RestClientHandler.readResponse(connection);
+		System.out.println(response);
+		// 5. convert String to JSON
+		JSONObject jsonObject = (JSONObject) JSONUtils.convertStringToJSON(response);
+		
+		// testing if all fields exist or not 
+		jsonObject.remove("bookingid");
+		JSONObject request_object = (JSONObject) JSONUtils.convertStringToJSON(resquestJSONObject);
+		System.out.println(request_object.equals(((JSONObject) jsonObject.get("booking"))));
+		//assertTrue(request_object.equals(((JSONObject) jsonObject.get("booking"))));
+	}
+}
+
+
+
+
+/*
+
+@Ignore
+@Test
+public void testCreatBooking() throws Exception {
+	// 1. Open Connection --- HttpURLConnection
+	HttpURLConnection connection = RestClientHandler.connectServer(URLs.BOOKING, HTTPMethod.POST,
+			HTTPRequestsContentTypes.JSON);
+	// 2. Prepare Json Object
+	String resquestJSONObject = JSONUtils.readJSONObjectFromFile(FilesPaths.NewBookingJSONFile);
+	// 3. Post Request
+	RestClientHandler.sendPost(connection, resquestJSONObject, HTTPRequestsContentTypes.JSON);
+	// 4. Reading Response
+	String response = RestClientHandler.readResponse(connection);
+	System.out.println(response);
+	// 5. convert String to JSON
+	JSONObject jsonObject = (JSONObject) JSONUtils.convertStringToJSON(response);
+	
+	jsonObject.remove(jsonObject.get("bookingid"));
+	
+	String bookingid = jsonObject.get("bookingid").toString();
+	String additionalneeds = ((JSONObject) jsonObject.get("booking")).get("additionalneeds").toString();
+
+	String checkin = ((JSONObject) (((JSONObject) jsonObject.get("booking")).get("bookingdates"))).get("checkin")
+			.toString();
+	System.out.println("bookingid=" + bookingid);
+	System.out.println("additionalneeds=" + additionalneeds);
+	System.out.println("checkin=" + checkin);
+
+	// 6. validation data jsonObject==response
+
+	// https://restful-booker.herokuapp.com/booking
+}
+*/

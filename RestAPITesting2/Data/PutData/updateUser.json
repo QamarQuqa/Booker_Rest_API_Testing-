@@ -1,0 +1,11 @@
+{
+    "firstname": "Qamar",
+    "lastname": "Quqa",
+    "totalprice": 213,
+    "depositpaid": false,
+    "bookingdates": {
+        "checkin": "2020-09-10",
+        "checkout": "2021-01-11"
+    },
+    "additionalneeds": "Breakfast"
+}
